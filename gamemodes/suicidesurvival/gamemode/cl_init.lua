@@ -111,51 +111,25 @@ end)
 			local Pitch = 360
 			local Yaw = 360
 			
-			if ServerBool("simple_thirdperson_forcesmooth","simple_thirdperson_smooth") then
+			Editor.DelayPos = pos
+			fov = Editor.DelayFov
 			
-				Editor.DelayPos = Editor.DelayPos + (ply:GetVelocity() * (FrameTime() / GetConVar( "simple_thirdperson_smooth_delay" ):GetFloat()))
-				Editor.DelayPos.x = math.Approach(Editor.DelayPos.x, pos.x, math.abs(Editor.DelayPos.x - pos.x) * GetConVar( "simple_thirdperson_smooth_mult_x" ):GetFloat())
-				Editor.DelayPos.y = math.Approach(Editor.DelayPos.y, pos.y, math.abs(Editor.DelayPos.y - pos.y) * GetConVar( "simple_thirdperson_smooth_mult_y" ):GetFloat())
-				Editor.DelayPos.z = math.Approach(Editor.DelayPos.z, pos.z, math.abs(Editor.DelayPos.z - pos.z) * GetConVar( "simple_thirdperson_smooth_mult_z" ):GetFloat())
-
-			else
-				Editor.DelayPos = pos
+			local traceData = {}
+			traceData.start = Editor.DelayPos
+			traceData.endpos = traceData.start + angles:Forward() * -Forward
+			traceData.endpos = traceData.endpos + angles:Right() * Right
+			traceData.endpos = traceData.endpos + angles:Up() * Up
+			traceData.filter = ply
+			
+			local trace = util.TraceLine(traceData)
+			
+			pos = trace.HitPos
+			
+			if trace.Fraction < 1.0 then
+				pos = pos + trace.HitNormal * 5
 			end
 			
-			if GetConVar( "simple_thirdperson_fov_smooth" ):GetBool() then
-				Editor.DelayFov = Editor.DelayFov + 20
-				fov = math.Approach(fov, Editor.DelayFov, math.abs(Editor.DelayFov - fov) * GetConVar( "simple_thirdperson_fov_smooth_mult" ):GetFloat())
-			else
-				fov = Editor.DelayFov
-			end
-			
-			if ServerBool("simple_thirdperson_forcecollide","simple_thirdperson_collision") then
-			
-				local traceData = {}
-				traceData.start = Editor.DelayPos
-				traceData.endpos = traceData.start + angles:Forward() * -Forward
-				traceData.endpos = traceData.endpos + angles:Right() * Right
-				traceData.endpos = traceData.endpos + angles:Up() * Up
-				traceData.filter = ply
-				
-				local trace = util.TraceLine(traceData)
-				
-				pos = trace.HitPos
-				
-				if trace.Fraction < 1.0 then
-					pos = pos + trace.HitNormal * 5
-				end
-				
-				view.origin = pos
-			else
-			
-				local View = Editor.DelayPos + ( angles:Forward()* -Forward )
-				View = View + ( angles:Right() * Right )
-				View = View + ( angles:Up() * Up )
-				
-				view.origin = View
-				
-			end
+			view.origin = pos
 
 			view.angles = angles
 			view.fov = fov

@@ -50,7 +50,7 @@ function GM:Initialize()
 		end
 	end)
 	
-	timer.Create("MainTimer", 600, 0, function()
+	timer.Create("MainTimer", 90, 0, function()
 		local ent = ents.FindByClass("prop_physics_multiplayer")
 		for _, _ent in pairs( ent ) do
 			if math.abs(_ent:GetAngles().z) > 40 then
@@ -60,7 +60,7 @@ function GM:Initialize()
 		end
 		
 		ent = ents.FindByClass("ss_entity_books")
-		if #ent < 3 then
+		if #ent < 5 then
 			for i = 1, #ammoPos do
 				local entity = ents.Create("ss_entity_books")
 				entity:SetPos(ammoPos[i])
