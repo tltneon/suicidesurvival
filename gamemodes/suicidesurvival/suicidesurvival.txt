@@ -1,0 +1,9 @@
+"suicidesurvival"
+{
+	"base"		"base"
+	"title"		"Suicide Survival"
+	"maps"		"^ss_"
+	"menusystem"	"1"
+	"workshopid"	"1584405300"
+	"settings"	{}
+}
